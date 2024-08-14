@@ -39,7 +39,6 @@ if MODE == 'sample':
                         lane_obs_data = env.get_lane_obs(lane)
                         if len(lane_obs_data) > 0:
                             dataset[len(lane_obs_data)].append(lane_obs_data)
-                        # env.set_random_vehicle_act(lane)
             env.step_env()
         env.end_env()
     utils.txt_save('../model/VAE/' + data_save_name + '.txt', dataset)

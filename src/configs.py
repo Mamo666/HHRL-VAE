@@ -140,8 +140,10 @@ CAV_configs = {
     'only_ctrl_curr_phase': False,  # 每时刻是只控制当前相位车道(T)还是控制所有车道(F)       # NOTE: 注意检查控制哪些车道
     'only_ctrl_head_cav': False,    # 每个车道上只控制头车(T)还是所有CAV(F)               # NOTE: 注意检查控制哪些CAV
 
+    'goal_only_indicates_state_mean': light_configs['goal_only_indicates_state_mean'],  # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
+
     'cav': {
-        'obs_dim': 5 + 2 + 1,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]
+        'obs_dim': 5 + 2,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]
         'state_dim': 32,   # LSTM输出维度   # !16!
         'act_dim': 1,    # 车辆智能体的动作空间 [决定车辆加速度的大小]
         'T': 1,    # 不宜设置过大，因为要攒够这么多步的obs才能开始决策和学习  # Here, 测试时T基本上都设为1

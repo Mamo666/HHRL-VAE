@@ -137,7 +137,7 @@ def generate_flow(net_mode: str, rou_path: str, total_car_num: list, space_dist_
                     lane_in = single_dict[str(edge_in) + ',' + str(edge_out)]  # 由于不考虑变道模型，故需要限制驶入车道
                     f.write('  <vehicle id="car_' + str(count) + '" depart="' + str(depart_time[time_car]) +
                             '" departLane="' + str(lane_in) + '" arrivalLane="' + str(np.random.randint(3)) +
-                            '" departSpeed="max" type="typedist1">\n' +
+                            '" departSpeed="max" departLane="best" type="typedist1">\n' +
                             '    <route edges="edge_' + str(edge_in) + ' -edge_' + str(edge_out) + '"/>\n' +
                             '  </vehicle>\n\n')
                 else:
@@ -146,7 +146,7 @@ def generate_flow(net_mode: str, rou_path: str, total_car_num: list, space_dist_
                             '" end="' + str(depart_time[time_car]) +
                             '" from="' + four_dict[edge_in] +
                             '" to="' + '-' + four_dict[edge_out] +
-                            '" number="1" departSpeed="max" type="typedist1">\n' +
+                            '" number="1" departSpeed="max" departLane="best" type="typedist1">\n' +
                             '  </flow>\n\n')
         f.write('</routes>\n')
     return space_dist

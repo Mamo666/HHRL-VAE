@@ -669,6 +669,9 @@ class WorkerCavAgent:
         self.ctrl_lane_num = 8 if self.ctrl_all_lane else 2  # 每个时刻控制的入口车道数。每一时刻都控制所有方向的车道
         self.ctrl_all_cav = not config['only_ctrl_head_cav']
 
+        self.lane_agent = config['lane_agent']
+        self.half_goal = config['goal_only_indicates_state_mean']
+
         self.use_CAV = config['use_CAV']
         self.train_model = config['train_model']
         self.load_model = config['load_model_name'] is not None
@@ -676,12 +679,13 @@ class WorkerCavAgent:
         config['memory_capacity'] = config['memory_capacity'] * len(self.light_id)  # 控制多路口会导致存速翻倍，故扩大容量以匹配
         config['cav']['obs_dim'] = config['cav']['obs_dim'] + config['high_goal_dim']  # 临时加上目标
 
-        config['goal_dim'] = config['high_goal_dim'] + 2
         self.goal_dim = config['high_goal_dim']
-        self.encoder = Encoder(2, self.goal_dim)
-        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.goal_dim))
-        # self.encoder = Encoder(2, self.goal_dim//2)
-        # self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.goal_dim//2))
+
+        enc_s_dim = self.goal_dim if self.half_goal else self.goal_dim // 2     # 现在确定用VAE方案，否则普通AE这里需要改
+        self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
+        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
+
+        config['goal_dim'] = config['high_goal_dim'] + 2
 
         self.network = WorkerTD3(config)
         self.save = lambda path, ep: self.network.save(path + 'cav_agent_' + self.holon_name + '_ep_' + str(ep))

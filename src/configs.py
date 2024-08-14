@@ -140,6 +140,7 @@ CAV_configs = {
     'only_ctrl_curr_phase': False,  # 每时刻是只控制当前相位车道(T)还是控制所有车道(F)       # NOTE: 注意检查控制哪些车道
     'only_ctrl_head_cav': False,    # 每个车道上只控制头车(T)还是所有CAV(F)               # NOTE: 注意检查控制哪些CAV
 
+    'lane_agent': light_configs['lane_agent'],  # 若为True，light每次决策一个车道的goal，否则决策所有车道的goal
     'goal_only_indicates_state_mean': light_configs['goal_only_indicates_state_mean'],  # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
 
     'cav': {

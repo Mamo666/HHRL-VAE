@@ -79,8 +79,9 @@ light_configs = {
     'load_model_ep': None,
     'lstm_observe_every_step': True,        # here，基本废弃该参数
 
-    'use_adj': False,
+    'use_adj': False,       # 若为True，每个路口的信号灯obs和reward会考虑相邻路口的
     'lane_agent': True,     # 若为True，light每次决策一个车道的goal，否则决策所有车道的goal
+    'goal_only_indicates_state_mean': True,     # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
 
     'time': {
         'obs_dim': 13,   # 路口智能体的状态维度 [下一相位one-hot, 各相位车辆数, 各相位排队数]

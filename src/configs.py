@@ -71,7 +71,6 @@ env_configs = {
 
 light_configs = {
     'use_opc': False,   # 注意，目前还没实现tg/pg/tpg的opc，只有G能用        # NOTE: 注意检查是否启用OPC，以及所用的方案是否能正确OPC
-    'use_adj': False,
     'use_time': True,   # 不用HATD3则用TD3
     'use_phase': True,
     'phase_agent': 'DQN',   # 'DQN'/'TD3'   # here,暂时不实现DQN
@@ -79,6 +78,9 @@ light_configs = {
     'load_model_name': None,
     'load_model_ep': None,
     'lstm_observe_every_step': True,        # here，基本废弃该参数
+
+    'use_adj': False,
+    'lane_agent': True,     # 若为True，light每次决策一个车道的goal，否则决策所有车道的goal
 
     'time': {
         'obs_dim': 13,   # 路口智能体的状态维度 [下一相位one-hot, 各相位车辆数, 各相位排队数]

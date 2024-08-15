@@ -81,7 +81,7 @@ light_configs = {
 
     'use_adj': False,       # 若为True，每个路口的信号灯obs和reward会考虑相邻路口的
     'lane_agent': True,     # 若为True，light每次决策一个车道的goal，否则决策所有车道的goal
-    'goal_only_indicates_state_mean': True,     # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
+    'goal_only_indicates_state_mean': False,     # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
 
     'time': {
         'obs_dim': 13,   # 路口智能体的状态维度 [下一相位one-hot, 各相位车辆数, 各相位排队数]
@@ -100,9 +100,9 @@ light_configs = {
     },
 
     'vehicle': {
-        'obs_dim': 13,  # 路口智能体的状态维度 [下一相位，各车道当前平均车速，各车道头车xva，时间（即另外两actor动作）]
+        'obs_dim': 13,  # 路口智能体的状态维度 [下一相位，各车道当前平均车速，各车道头车xva，时间（即另外两actor动作）]  # todo 未固化
         'state_dim': 128,  # RNN层的输出维度
-        'act_dim': 16,       # 速度建议智能体的动作空间 [路口控制车道数]
+        'act_dim': 4,       # 速度建议智能体的动作空间 [路口控制车道数]
         'T': env_configs['yellow'] + env_configs['red'] + env_configs['min_green'],     # here, T后面可以看情况修改
         'hidden_dim': [400, 300],  # actor和critic网络隐藏层维度一样。
     },
@@ -144,23 +144,23 @@ CAV_configs = {
     'goal_only_indicates_state_mean': light_configs['goal_only_indicates_state_mean'],  # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
 
     'cav': {
-        'obs_dim': 5 + 2,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]
+        'obs_dim': 5 + 2,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]    todo 未固化
         'state_dim': 32,   # LSTM输出维度   # !16!
         'act_dim': 1,    # 车辆智能体的动作空间 [决定车辆加速度的大小]
         'T': 1,    # 不宜设置过大，因为要攒够这么多步的obs才能开始决策和学习  # Here, 测试时T基本上都设为1
         'hidden_dim': [128, 128],  # actor和critic网络隐藏层维度一样。
     },
     'high_goal_dim': light_configs['vehicle']['act_dim'],                   # NOTE: 如果要改成一次定所有车道目标，这里改成/8
-    'goal_dim': 1,         # 目标维度——建议速度
+    'goal_dim': 1,         # 目标维度——建议速度                                 # todo 未固化
 
     'encoder_load_path': 'VAE/newEnc_bigger_0814/dataset_2',
     'hidden_dim': [128, 128],   # !
 
     'batch_size': 64,       # 批大小
-    'memory_capacity': 40000,    # fixed goal 7
-    'learn_start_ratio': 0.2,    # fixed goal                                           # NOTE: 注意检查开始学习的时机
-    # 'memory_capacity': 120000,    # fixed goal 14
-    # 'learn_start_ratio': 0.4,    # fixed goal
+    # 'memory_capacity': 40000,    # fixed goal 7
+    # 'learn_start_ratio': 0.2,    # fixed goal                                           # NOTE: 注意检查开始学习的时机
+    'memory_capacity': 120000,    # fixed goal 14
+    'learn_start_ratio': 0.4,    # fixed goal
     'gamma': 0.9,           # 比路灯短视! 10步
     'tau': 0.005,           # 软更新参数
     # 'alpha': 0.5,             # 内在奖励权重,为0则不考虑上层，为1则忠心耿耿

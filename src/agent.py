@@ -228,7 +228,7 @@ class ManagerLightAgent:
             self.goal_dim = config['vehicle']['act_dim']
         else:
             assert config['vehicle']['act_dim'] % 8 == 0, '一次定8个车道的目标，则要求vehicle:act_dim能被8整除'
-            self.goal_dim = config['vehicle']['act_dim'] / 8    # 表示每条车道的目标维度
+            self.goal_dim = config['vehicle']['act_dim'] / 8    # 表示每条车道的状态维度
 
         self.o_g = config['vehicle']['obs_dim']     # 因为要临时改掉使得网络init时用原obs+目标编码，但step_goal_obs的size仍是原obs
         self.a_g = config['vehicle']['act_dim']     # 网络输出的动作大小。
@@ -677,15 +677,21 @@ class WorkerCavAgent:
         self.load_model = config['load_model_name'] is not None
 
         config['memory_capacity'] = config['memory_capacity'] * len(self.light_id)  # 控制多路口会导致存速翻倍，故扩大容量以匹配
-        config['cav']['obs_dim'] = config['cav']['obs_dim'] + config['high_goal_dim']  # 临时加上目标
 
-        self.goal_dim = config['high_goal_dim']
+        self.goal_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
+        # 现在确定用VAE方案，否则普通AE这里需要改        # 上层动作：high_goal_dim，车道状态：self.goal_dim
+        if self.half_goal:  # 若上层只管均值
+            enc_s_dim = self.goal_dim   # 均值维度即encoder在init时认为的goal的维度
+            self.goal_dim = self.goal_dim * 2     # 车道状态维度
+        else:
+            enc_s_dim = self.goal_dim // 2
 
-        enc_s_dim = self.goal_dim if self.half_goal else self.goal_dim // 2     # 现在确定用VAE方案，否则普通AE这里需要改
         self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
         self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
 
-        config['goal_dim'] = config['high_goal_dim'] + 2
+        config['cav']['obs_dim'] = config['cav']['obs_dim'] + config['high_goal_dim']  # 临时加上目标
+        config['goal_dim'] = config['high_goal_dim'] + 2    # 下层输入actor的“车辆goal”维度
+        # config['goal_dim'] = 2    # here:可以一试
 
         self.network = WorkerTD3(config)
         self.save = lambda path, ep: self.network.save(path + 'cav_agent_' + self.holon_name + '_ep_' + str(ep))
@@ -700,7 +706,6 @@ class WorkerCavAgent:
         self.ctrl_cav = {light: deque([[None] * self.ctrl_lane_num], maxlen=2) for light in self.light_id}
         self.global_income_cav = deque([[], []], maxlen=2)
         self.next_phase = {light: 1 for light in self.light_id}
-        # self.goal = {light: deque([], maxlen=2) for light in self.light_id}
         self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.goal_dim)) for light in self.light_id}
         self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.goal_dim))], maxlen=2) for light in self.light_id}
 
@@ -740,12 +745,6 @@ class WorkerCavAgent:
 
                 encoded = np.array([self.encoder.encode(env.get_lane_obs(lane)) for lane in env.light_get_lane(light)])
                 self.lane_state[light].append(encoded)
-                # loss = 0
-                # for lane in env.light_get_lane(light):
-                #     data = env.get_lane_obs(lane)
-                #     if len(data) > 0:
-                #         loss = self.encoder.learn([data])
-                # print(loss, end='\t')
 
             self.global_income_cav.append(global_income_cav)
         for light_idx, light in enumerate(self.light_id):
@@ -762,14 +761,14 @@ class WorkerCavAgent:
 
             curr_lane = env.light_get_ctrl_lane(light, self.next_phase[light], curr_phase=False)    # 等效light_get_lane
             if goal is not None:    # 说明上层切相位了，接下来是一对新车道的yrg
-                # goal = (goal + 1) / 2   # [-1,1]->[0,1] Note:要长脑子了！如果[0,1]而goal又表示一个差分值，则当前和之前的目标只能同向
-                goal = goal.reshape(-1, self.goal_dim)
-                # self.goal[light] = deque([goal], maxlen=2)  # dequeue<np.array>
-                self.goal_state[light] = np.clip(self.lane_state[light][-1] + goal, 0, 1)  # np.array加法
+                goal = goal.reshape(8, -1)      # 注意改了这里，永久假设上层每次制定所有可受控车道的goal
+                gs = self.lane_state[light][-1].copy()
+                if self.half_goal:
+                    gs[:, :len(goal)] += goal
+                else:
+                    gs += goal
+                self.goal_state[light] = np.clip(gs, 0, 1)  # clip
                 self.next_phase[light] = next_phase
-            # else:
-            #     goal_transition = self.lane_state[light][-2] + self.goal[light][-1] - self.lane_state[light][-1]
-            #     self.goal[light].append(np.clip(goal_transition, -1, 1))
 
             # 对比两时刻头CAV，上时刻还有现在没了(可能切相位或驶出)的要reset一下跟驰
             for cav_id in self.ctrl_cav[light][-2]:
@@ -781,15 +780,12 @@ class WorkerCavAgent:
 
                     del self.trans_buffer[cav_id]
 
-            curr_delta = self.goal_state[light] - self.lane_state[light][-1]
+            curr_delta = self.goal_state[light] - self.lane_state[light][-1]    # 当前的差分goal，用于计算内在奖励
             curr_all_lane_obs, curr_all_lane_act = [], []   # 用于保存8车道头车的o & a
             for cav_id in self.ctrl_cav[light][-1]:
                 o_v = env.get_head_cav_obs(cav_id)  # list
                 lane_id = curr_lane.index(env.cav_get_lane(cav_id))
-                # state_enc = self.lane_state[light][-1][lane_id].tolist()
-                # decoded_v = self.encoder.decode(self.lane_state[light][-1][lane_id], [o_v[0]]).flatten().tolist()
-                # o_v = o_v[:-1] + decoded_v  # 7+g
-                o_v = o_v[:-1] + self.lane_state[light][-1][lane_id].tolist()
+                # o_v = o_v + self.lane_state[light][-1][lane_id].tolist()  # note：是否有必要将编码形式的状态告诉CAV？值得对比
 
                 a_v_for_manager = -1
                 if cav_id:  # cav is not None
@@ -805,12 +801,11 @@ class WorkerCavAgent:
                         self.trans_buffer[cav_id]['obs'].append(o_v)
 
                     cav_obs = self.trans_buffer[cav_id]['obs']
-                    # goal_state = np.clip(self.lane_state[light][-1] + self.goal[light][-1], 0, 1)
                     if len(cav_obs) >= self.T:  # 没存满就先不控制
-                        # curr_g = self.goal[light][-1][lane_id]  # goal is delta
-                        # g_v = self.encoder.decode(goal_state[lane_id], [o_v[0]]).flatten().tolist()
-                        decoded_v = self.encoder.decode(self.goal_state[light][lane_id], [o_v[0]]).flatten().tolist()
-                        g_v = self.goal_state[light][lane_id].flatten().tolist() + [o_v[0]] + decoded_v
+                        curr_adv_v = self.encoder.decode(self.goal_state[light][lane_id], [o_v[0]]).flatten().tolist()
+                        next_loc = (o_v[0] * env.base_lane_length + o_v[1] * env.max_speed) / env.base_lane_length
+                        next_adv_v = self.encoder.decode(self.goal_state[light][lane_id], [next_loc]).flatten().tolist()
+                        g_v = self.goal_state[light][lane_id].flatten().tolist() + curr_adv_v + next_adv_v
                         self.trans_buffer[cav_id]['goal'].append(g_v)
 
                         if self.train_model:  # 加噪声
@@ -827,7 +822,8 @@ class WorkerCavAgent:
                         real_a = cav_obs[-1][2]    # [-?,1]
                         self.trans_buffer[cav_id]['real_acc'].append(real_a)   # 获取的是上一时步的实际acc
 
-                        int_reward = -np.sqrt(np.sum(curr_delta[lane_id] ** 2))
+                        int_reward = -np.sqrt(np.sum(curr_delta[lane_id] ** 2))     # 同一条车道上车辆的inner reward相同
+                        int_reward += -abs(curr_adv_v - o_v[1])                     # note:这里是新增的哦！！！
                         ext_reward = env.get_cav_reward(cav_obs[-1], self.trans_buffer[cav_id]['real_acc'][-2],
                                                         self.trans_buffer[cav_id]['action'][-2]) if len(cav_obs) >= 1 + self.T else 0
                         reward = (1 - self.alpha) * ext_reward + self.alpha * int_reward
@@ -837,7 +833,7 @@ class WorkerCavAgent:
 
                         if self.train_model and len(cav_obs) >= self.T + 1:  # encoder稳定了才能存
                             self.network.store_transition(np.array(cav_obs[-self.T - 1: -1]).flatten(),
-                                                          # self.trans_buffer[cav_id]['action'][-2],
+                                                          # self.trans_buffer[cav_id]['action'][-2],    # here,要对比吗？可以不用
                                                           self.trans_buffer[cav_id]['real_acc'][-1],    # 当前时刻的real_acc存的是上一时刻动作的真实效果
                                                           self.trans_buffer[cav_id]['goal'][-2],
                                                           self.trans_buffer[cav_id]['goal'][-1],    # next_goal
@@ -867,7 +863,6 @@ class WorkerCavAgent:
         self.global_income_cav = deque([[], []], maxlen=2)
         self.next_phase = {light: 1 for light in self.light_id}
         self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.goal_dim))], maxlen=2) for light in self.light_id}
-        # self.goal = {light: deque([], maxlen=2) for light in self.light_id}
         self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.goal_dim)) for light in self.light_id}
 
         self.trans_buffer = {}
@@ -886,27 +881,31 @@ class LoyalCavAgent:
             self.holon_name = 'h_' + light_id[0]
             self.light_id = list(light_id)
 
-        self.network = WorkerTD3(config)
+        self.network = WorkerTD3(config)    # 实例化一个网络但没用于控制，只是对外接口保持一致罢了
         self.save = lambda path, ep: print('Loyal Agent no need to save')
 
         self.use_CAV = config['use_CAV']
         self.train_model = config['train_model']
         self.load_model = config['load_model_name'] is not None
 
-        # config['cav']['obs_dim'] = config['cav']['obs_dim'] - 1 + config['goal_dim']  # 临时引用当前的obs：去掉平均车速，加上目标
-        config['cav']['obs_dim'] = config['cav']['obs_dim'] - 1 + config['high_goal_dim']  # 临时引用当前的obs：去掉平均车速，加上目标
+        self.lane_agent = config['lane_agent']
+        self.half_goal = config['goal_only_indicates_state_mean']
 
-        config['goal_dim'] = config['high_goal_dim'] + 2
-        self.goal_dim = config['high_goal_dim']
-        self.encoder = Encoder(2, self.goal_dim//2)
-        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.goal_dim//2))
+        self.goal_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
+        # 现在确定用VAE方案，否则普通AE这里需要改        # 上层动作：high_goal_dim，车道状态：self.goal_dim
+        if self.half_goal:  # 若上层只管均值
+            enc_s_dim = self.goal_dim   # 均值维度即encoder在init时认为的goal的维度
+            self.goal_dim = self.goal_dim * 2     # 车道状态维度
+        else:
+            enc_s_dim = self.goal_dim // 2
+
+        self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
+        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
 
         self.var = config['var']
         self.T = config['cav']['T']
 
         self.last_car_list = {light: [] for light in self.light_id}
-        # self.lane_state = {light: deque([np.zeros((8, self.goal_dim))], maxlen=2) for light in self.light_id}
-        # self.goal = {light: deque([], maxlen=2) for light in self.light_id}
         self.goal_state = {light: np.zeros((8, self.goal_dim)) for light in self.light_id}
         self.reward_list = []
         self.for_manager = {'obs': [[[-1] * self.network.o_dim for _ in range(8)] for _ in range(25)],
@@ -938,22 +937,25 @@ class LoyalCavAgent:
             # encoded = np.array([self.encoder.encode(env.get_lane_obs(lane)) for lane in env.light_get_lane(light)])
             # self.lane_state[light].append(encoded)
             if goal is not None:
-                goal = goal.reshape(-1, self.goal_dim)
-                # self.goal[light] = deque([goal], maxlen=2)  # dequeue<np.array>
-                self.goal_state[light] = np.clip(np.array([self.encoder.encode(env.get_lane_obs(lane)) for lane in env.light_get_lane(light)]) + goal, 0, 1)  # np.array加法
-            # else:
-            #     goal_transition = self.lane_state[light][-2] + self.goal[light][-1] - self.lane_state[light][-1]
-            #     self.goal[light].append(np.clip(goal_transition, -1, 1))
+                goal = goal.reshape(8, -1)      # 注意改了这里，永久假设上层每次制定所有可受控车道的goal
+                gs = np.array([self.encoder.encode(env.get_lane_obs(lane)) for lane in env.light_get_lane(light)])
+                if self.half_goal:
+                    gs[:, :len(goal)] += goal
+                else:
+                    gs += goal
+                self.goal_state[light] = np.clip(gs, 0, 1)  # clip
 
             curr_car = []
-            # goal_state = np.clip(self.lane_state[light][-1] + self.goal[light][-1], 0, 1)
             for lid, lane in enumerate(env.light_get_lane(light)):  # 必控制所有车道所有车(无论是不是CAV)
                 lane_car = env.lane_get_all_car(lane)
                 curr_car.extend(lane_car)
 
                 for car in lane_car:
-                    loc = env.get_head_cav_obs(car)[0]
-                    adv_v = self.encoder.decode(self.goal_state[light][lid], [loc])[0]
+                    o_v = env.get_head_cav_obs(car)
+                    next_loc = (o_v[0] * env.base_lane_length + o_v[1] * env.max_speed) / env.base_lane_length
+                    # adv_v = self.encoder.decode(self.goal_state[light][lid], [o_v[0]])[0]  # 弃用：当前位置转瞬即逝
+                    adv_v = self.encoder.decode(self.goal_state[light][lid], [next_loc])[0]
+
                     if adv_v > 1 or adv_v < 0:
                         print('decode_v=', adv_v * env.max_speed)
                     curr_tar_v = max(min(adv_v * env.max_speed, 1), 0)
@@ -968,8 +970,6 @@ class LoyalCavAgent:
 
     def reset(self):
         self.last_car_list = {light: [] for light in self.light_id}
-        # self.lane_state = {light: deque([np.zeros((8, self.goal_dim))], maxlen=2) for light in self.light_id}
-        # self.goal = {light: deque([], maxlen=2) for light in self.light_id}
         self.goal_state = {light: np.zeros((8, self.goal_dim)) for light in self.light_id}
         self.reward_list = []
         self.for_manager = {'obs': [[[-1] * 8 for _ in range(8)] for _ in range(25)],

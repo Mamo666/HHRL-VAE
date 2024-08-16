@@ -12,7 +12,7 @@ np.random.seed(3407)  # 设置随机种子
 torch.backends.cudnn.deterministic = True
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# print(torch.cuda.is_available())
+print('cuda is available =', torch.cuda.is_available())
 
 
 class DeepSetEncoder(nn.Module):

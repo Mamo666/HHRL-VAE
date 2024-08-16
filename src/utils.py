@@ -137,7 +137,7 @@ def generate_flow(net_mode: str, rou_path: str, total_car_num: list, space_dist_
                     lane_in = single_dict[str(edge_in) + ',' + str(edge_out)]  # 由于不考虑变道模型，故需要限制驶入车道
                     f.write('  <vehicle id="car_' + str(count) + '" depart="' + str(depart_time[time_car]) +
                             '" departLane="' + str(lane_in) + '" arrivalLane="' + str(np.random.randint(3)) +
-                            '" departSpeed="max" departLane="best" type="typedist1">\n' +
+                            '" departSpeed="max" type="typedist1">\n' +
                             '    <route edges="edge_' + str(edge_in) + ' -edge_' + str(edge_out) + '"/>\n' +
                             '  </vehicle>\n\n')
                 else:
@@ -156,7 +156,8 @@ if __name__ == "__main__":
     np.random.seed(3407)  # 设置随机种子
 
     # rou_dir = 'single/rou_test'
-    rou_dir = 'four/rou_half'
+    # rou_dir = 'four/rou_half'
+    rou_dir = 'single/rou_0816'
     mkdir('../sumo_sim_env/' + rou_dir)
 
     cav_penetration = 0.2

@@ -26,8 +26,8 @@ env_configs = {
         'time_step': 1,  # 仿真步长为1s
 
         # 文件路径设置
-        'sumocfg_path': '../sumo_sim_env/collision_env.sumocfg',    # 从代码到env.sumocfg的路径
-        'rou_path': 'single/rou/',
+        'sumocfg_path': '../sumo_sim_env/collision_env_s.sumocfg',    # 从代码到env.sumocfg的路径。为防修改冲突，新开一个
+        'rou_path': 'single/rou_0816/',
         'net_path': 'single/no_lane_change.net.xml',  # 路网文件只会有一个,故写全
     },
 

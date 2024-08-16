@@ -225,18 +225,19 @@ class ManagerLightAgent:
         config['memory_capacity'] = config['memory_capacity'] * len(self.light_id)  # 控制多路口会导致存速翻倍，故扩大容量以匹配
         if self.lane_agent:
             config['memory_capacity'] = config['memory_capacity'] * 8   # 每次只给一个车道制定目标也会导致存速翻倍
-            self.goal_dim = config['vehicle']['act_dim']
+            self.lane_state_dim = config['vehicle']['act_dim']
         else:
             assert config['vehicle']['act_dim'] % 8 == 0, '一次定8个车道的目标，则要求vehicle:act_dim能被8整除'
-            self.goal_dim = config['vehicle']['act_dim'] / 8    # 表示每条车道的状态维度
+            self.lane_state_dim = config['vehicle']['act_dim'] / 8    # 表示每条车道的状态维度
+        if self.half_goal:
+            self.lane_state_dim *= 2
 
         self.o_g = config['vehicle']['obs_dim']     # 因为要临时改掉使得网络init时用原obs+目标编码，但step_goal_obs的size仍是原obs
         self.a_g = config['vehicle']['act_dim']     # 网络输出的动作大小。
-        config['vehicle']['obs_dim'] = config['vehicle']['obs_dim'] + self.goal_dim + 8  # note:临时修改当前的obs：加上状态编码目标
+        config['vehicle']['obs_dim'] = config['vehicle']['obs_dim'] + self.lane_state_dim + 8  # note:临时修改当前的obs：加上状态编码目标
 
-        enc_s_dim = self.goal_dim if self.half_goal else self.goal_dim // 2     # 现在确定用VAE方案，否则普通AE这里需要改
-        self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
-        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
+        self.encoder = Encoder(2, self.lane_state_dim // 2)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
+        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.lane_state_dim // 2))
 
         if self.use_time and self.use_phase:
             self.light_opt = 'both'
@@ -283,7 +284,7 @@ class ManagerLightAgent:
         self.a_g_list = {light: deque(maxlen=2) for light in self.light_id}
         self.reward_list = []
         self.accumulate_reward_manager = {light: [] for light in self.light_id}
-        self.step_encode_obs = {light: deque([[[0.] * self.goal_dim for l in range(8)] for t in range(self.T_g)], maxlen=self.T_g) for light in self.light_id}
+        self.step_encode_obs = {light: deque([[[0.] * self.lane_state_dim for l in range(8)] for t in range(self.T_g)], maxlen=self.T_g) for light in self.light_id}
 
     @property
     def pointer(self):
@@ -517,7 +518,7 @@ class ManagerLightAgent:
         self.a_g_list = {light: deque(maxlen=2) for light in self.light_id}
         self.reward_list = []
         self.accumulate_reward_manager = {light: [] for light in self.light_id}
-        self.step_encode_obs = {light: deque([[[0.] * self.goal_dim for l in range(8)] for t in range(self.T_g)], maxlen=self.T_g) for light in self.light_id}
+        self.step_encode_obs = {light: deque([[[0.] * self.lane_state_dim for l in range(8)] for t in range(self.T_g)], maxlen=self.T_g) for light in self.light_id}
 
 
 """
@@ -678,19 +679,16 @@ class WorkerCavAgent:
 
         config['memory_capacity'] = config['memory_capacity'] * len(self.light_id)  # 控制多路口会导致存速翻倍，故扩大容量以匹配
 
-        self.goal_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
-        # 现在确定用VAE方案，否则普通AE这里需要改        # 上层动作：high_goal_dim，车道状态：self.goal_dim
+        self.lane_state_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
+        # 现在确定用VAE方案，否则普通AE这里需要改        # 上层动作：high_goal_dim，车道状态：self.lane_state_dim
         if self.half_goal:  # 若上层只管均值
-            enc_s_dim = self.goal_dim   # 均值维度即encoder在init时认为的goal的维度
-            self.goal_dim = self.goal_dim * 2     # 车道状态维度
-        else:
-            enc_s_dim = self.goal_dim // 2
+            self.lane_state_dim *= 2     # 车道状态维度
 
-        self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
-        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
+        self.encoder = Encoder(2, self.lane_state_dim // 2)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
+        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.lane_state_dim // 2))
 
-        config['cav']['obs_dim'] = config['cav']['obs_dim'] + config['high_goal_dim']  # 临时加上目标
-        config['goal_dim'] = config['high_goal_dim'] + 2    # 下层输入actor的“车辆goal”维度
+        config['cav']['obs_dim'] = config['cav']['obs_dim'] + self.lane_state_dim  # note 临时加上目标
+        config['goal_dim'] = self.lane_state_dim + 2    # 下层输入actor的“车辆goal”维度
         # config['goal_dim'] = 2    # here:可以一试
 
         self.network = WorkerTD3(config)
@@ -706,8 +704,8 @@ class WorkerCavAgent:
         self.ctrl_cav = {light: deque([[None] * self.ctrl_lane_num], maxlen=2) for light in self.light_id}
         self.global_income_cav = deque([[], []], maxlen=2)
         self.next_phase = {light: 1 for light in self.light_id}
-        self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.goal_dim)) for light in self.light_id}
-        self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.goal_dim))], maxlen=2) for light in self.light_id}
+        self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.lane_state_dim)) for light in self.light_id}
+        self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.lane_state_dim))], maxlen=2) for light in self.light_id}
 
         self.trans_buffer = {}
         self.ext_reward_list = []
@@ -764,7 +762,7 @@ class WorkerCavAgent:
                 goal = goal.reshape(8, -1)      # 注意改了这里，永久假设上层每次制定所有可受控车道的goal
                 gs = self.lane_state[light][-1].copy()
                 if self.half_goal:
-                    gs[:, :len(goal)] += goal
+                    gs[:, :goal.shape[1]] += goal
                 else:
                     gs += goal
                 self.goal_state[light] = np.clip(gs, 0, 1)  # clip
@@ -785,7 +783,7 @@ class WorkerCavAgent:
             for cav_id in self.ctrl_cav[light][-1]:
                 o_v = env.get_head_cav_obs(cav_id)  # list
                 lane_id = curr_lane.index(env.cav_get_lane(cav_id))
-                # o_v = o_v + self.lane_state[light][-1][lane_id].tolist()  # note：是否有必要将编码形式的状态告诉CAV？值得对比
+                o_v = o_v + self.lane_state[light][-1][lane_id].tolist()  # note：是否有必要将编码形式的状态告诉CAV？值得对比
 
                 a_v_for_manager = -1
                 if cav_id:  # cav is not None
@@ -823,7 +821,7 @@ class WorkerCavAgent:
                         self.trans_buffer[cav_id]['real_acc'].append(real_a)   # 获取的是上一时步的实际acc
 
                         int_reward = -np.sqrt(np.sum(curr_delta[lane_id] ** 2))     # 同一条车道上车辆的inner reward相同
-                        int_reward += -abs(curr_adv_v - o_v[1])                     # note:这里是新增的哦！！！
+                        int_reward += -abs(curr_adv_v[0] - o_v[1])                     # note:这里是新增的哦！！！！！！！！！！！！！！！
                         ext_reward = env.get_cav_reward(cav_obs[-1], self.trans_buffer[cav_id]['real_acc'][-2],
                                                         self.trans_buffer[cav_id]['action'][-2]) if len(cav_obs) >= 1 + self.T else 0
                         reward = (1 - self.alpha) * ext_reward + self.alpha * int_reward
@@ -862,8 +860,8 @@ class WorkerCavAgent:
         self.ctrl_cav = {light: deque([[None] * self.ctrl_lane_num], maxlen=2) for light in self.light_id}
         self.global_income_cav = deque([[], []], maxlen=2)
         self.next_phase = {light: 1 for light in self.light_id}
-        self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.goal_dim))], maxlen=2) for light in self.light_id}
-        self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.goal_dim)) for light in self.light_id}
+        self.lane_state = {light: deque([np.zeros((self.ctrl_lane_num, self.lane_state_dim))], maxlen=2) for light in self.light_id}
+        self.goal_state = {light: np.zeros((self.ctrl_lane_num, self.lane_state_dim)) for light in self.light_id}
 
         self.trans_buffer = {}
         self.ext_reward_list = []
@@ -891,22 +889,18 @@ class LoyalCavAgent:
         self.lane_agent = config['lane_agent']
         self.half_goal = config['goal_only_indicates_state_mean']
 
-        self.goal_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
-        # 现在确定用VAE方案，否则普通AE这里需要改        # 上层动作：high_goal_dim，车道状态：self.goal_dim
+        self.lane_state_dim = config['high_goal_dim'] if self.lane_agent else config['high_goal_dim'] / 8     # 上层动作维度
         if self.half_goal:  # 若上层只管均值
-            enc_s_dim = self.goal_dim   # 均值维度即encoder在init时认为的goal的维度
-            self.goal_dim = self.goal_dim * 2     # 车道状态维度
-        else:
-            enc_s_dim = self.goal_dim // 2
+            self.lane_state_dim *= 2
 
-        self.encoder = Encoder(2, enc_s_dim)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
-        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(enc_s_dim))
+        self.encoder = Encoder(2, self.lane_state_dim // 2)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
+        self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.lane_state_dim // 2))
 
         self.var = config['var']
         self.T = config['cav']['T']
 
         self.last_car_list = {light: [] for light in self.light_id}
-        self.goal_state = {light: np.zeros((8, self.goal_dim)) for light in self.light_id}
+        self.goal_state = {light: np.zeros((8, self.lane_state_dim)) for light in self.light_id}
         self.reward_list = []
         self.for_manager = {'obs': [[[-1] * self.network.o_dim for _ in range(8)] for _ in range(25)],
                             'act': [[[-1] for _ in range(8)] for _ in range(25)]}
@@ -970,7 +964,7 @@ class LoyalCavAgent:
 
     def reset(self):
         self.last_car_list = {light: [] for light in self.light_id}
-        self.goal_state = {light: np.zeros((8, self.goal_dim)) for light in self.light_id}
+        self.goal_state = {light: np.zeros((8, self.lane_state_dim)) for light in self.light_id}
         self.reward_list = []
         self.for_manager = {'obs': [[[-1] * 8 for _ in range(8)] for _ in range(25)],
                             'act': [[[-1] for _ in range(8)] for _ in range(25)]}

@@ -133,9 +133,9 @@ class Encoder(nn.Module):
 
     def load(self, filename):
         # 加载模型
-        self.encoder.load_state_dict(torch.load(filename + "_enc"))
-        self.decoder.load_state_dict(torch.load(filename + "_dec"))
-        self.opt.load_state_dict(torch.load(filename + "_encoder_optimizer"))
+        self.encoder.load_state_dict(torch.load(filename + "_enc", weights_only=True))
+        self.decoder.load_state_dict(torch.load(filename + "_dec", weights_only=True))
+        self.opt.load_state_dict(torch.load(filename + "_encoder_optimizer", weights_only=True))
 
 
 class LSTM(nn.Module):

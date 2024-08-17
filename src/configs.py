@@ -100,7 +100,7 @@ light_configs = {
     },
 
     'vehicle': {
-        'obs_dim': 13,  # 路口智能体的状态维度 [下一相位，各车道当前平均车速，各车道头车xva，时间（即另外两actor动作）]  # todo 未固化
+        'obs_dim': 13,  # 路口智能体的状态维度 [下一相位，各车道当前平均车速，各车道头车xva，时间（即另外两actor动作）]
         'state_dim': 128,  # RNN层的输出维度
         'act_dim': 4,       # 速度建议智能体的动作空间 [路口控制车道数]
         'T': env_configs['yellow'] + env_configs['red'] + env_configs['min_green'],     # here, T后面可以看情况修改
@@ -142,16 +142,17 @@ CAV_configs = {
 
     'lane_agent': light_configs['lane_agent'],  # 若为True，light每次决策一个车道的goal，否则决策所有车道的goal
     'goal_only_indicates_state_mean': light_configs['goal_only_indicates_state_mean'],  # 若为True，上层的goal只表示状态均值delta，不指示状态方差要怎么变
+    'use_raw_goal': True,                       # 若为True，在obs和goal中加入所在车道的未解码信息     # todo reward未固化
 
     'cav': {
-        'obs_dim': 5 + 2,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]    todo 未固化
+        'obs_dim': 5 + 2,   # 车辆智能体的状态维度 [与前车距离、与前车速度差、与路口距离、当前车速、当前加速度、信号灯指示符、倒计时、平均车速]
         'state_dim': 32,   # LSTM输出维度   # !16!
         'act_dim': 1,    # 车辆智能体的动作空间 [决定车辆加速度的大小]
         'T': 1,    # 不宜设置过大，因为要攒够这么多步的obs才能开始决策和学习  # Here, 测试时T基本上都设为1
         'hidden_dim': [128, 128],  # actor和critic网络隐藏层维度一样。
     },
     'high_goal_dim': light_configs['vehicle']['act_dim'],                   # NOTE: 如果要改成一次定所有车道目标，这里改成/8
-    'goal_dim': 1,         # 目标维度——建议速度                                 # todo 未固化
+    'goal_dim': 2,         # 目标维度——建议速度(当前位置和下一位置的)
 
     'encoder_load_path': 'VAE/newEnc_bigger_0814/dataset_2',
     'hidden_dim': [128, 128],   # !

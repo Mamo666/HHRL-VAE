@@ -234,7 +234,10 @@ class ManagerLightAgent:
 
         self.o_g = config['vehicle']['obs_dim']     # 因为要临时改掉使得网络init时用原obs+目标编码，但step_goal_obs的size仍是原obs
         self.a_g = config['vehicle']['act_dim']     # 网络输出的动作大小。
-        config['vehicle']['obs_dim'] = config['vehicle']['obs_dim'] + self.lane_state_dim + 8  # note:临时修改当前的obs：加上状态编码目标
+        if self.lane_agent:
+            config['vehicle']['obs_dim'] = config['vehicle']['obs_dim'] + self.lane_state_dim + 8
+        else:   # 若一次制定所有车道的目标
+            config['vehicle']['obs_dim'] = config['vehicle']['obs_dim'] + self.lane_state_dim * 8
 
         self.encoder = Encoder(2, self.lane_state_dim // 2)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
         self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.lane_state_dim // 2))
@@ -672,6 +675,7 @@ class WorkerCavAgent:
 
         self.lane_agent = config['lane_agent']
         self.half_goal = config['goal_only_indicates_state_mean']
+        self.use_raw_goal = config['use_raw_goal']
 
         self.use_CAV = config['use_CAV']
         self.train_model = config['train_model']
@@ -687,9 +691,9 @@ class WorkerCavAgent:
         self.encoder = Encoder(2, self.lane_state_dim // 2)    # 例如Encoder用的dim=4，那么实际出来的状态是8，因为是mean+logvar
         self.encoder.load('../model/' + config['encoder_load_path'] + '/encoder_dim_' + str(self.lane_state_dim // 2))
 
-        config['cav']['obs_dim'] = config['cav']['obs_dim'] + self.lane_state_dim  # note 临时加上目标
-        config['goal_dim'] = self.lane_state_dim + 2    # 下层输入actor的“车辆goal”维度
-        # config['goal_dim'] = 2    # here:可以一试
+        if self.use_raw_goal:
+            config['cav']['obs_dim'] = config['cav']['obs_dim'] + self.lane_state_dim  # 临时加上目标
+            config['goal_dim'] = config['goal_dim'] + self.lane_state_dim    # 下层输入actor的“车辆goal”维度
 
         self.network = WorkerTD3(config)
         self.save = lambda path, ep: self.network.save(path + 'cav_agent_' + self.holon_name + '_ep_' + str(ep))
@@ -783,7 +787,9 @@ class WorkerCavAgent:
             for cav_id in self.ctrl_cav[light][-1]:
                 o_v = env.get_head_cav_obs(cav_id)  # list
                 lane_id = curr_lane.index(env.cav_get_lane(cav_id))
-                o_v = o_v + self.lane_state[light][-1][lane_id].tolist()  # note：是否有必要将编码形式的状态告诉CAV？值得对比
+
+                if self.use_raw_goal:
+                    o_v = o_v + self.lane_state[light][-1][lane_id].tolist()
 
                 a_v_for_manager = -1
                 if cav_id:  # cav is not None
@@ -803,7 +809,11 @@ class WorkerCavAgent:
                         curr_adv_v = self.encoder.decode(self.goal_state[light][lane_id], [o_v[0]]).flatten().tolist()
                         next_loc = (o_v[0] * env.base_lane_length + o_v[1] * env.max_speed) / env.base_lane_length
                         next_adv_v = self.encoder.decode(self.goal_state[light][lane_id], [next_loc]).flatten().tolist()
-                        g_v = self.goal_state[light][lane_id].flatten().tolist() + curr_adv_v + next_adv_v
+
+                        if self.use_raw_goal:
+                            g_v = self.goal_state[light][lane_id].flatten().tolist() + curr_adv_v + next_adv_v
+                        else:
+                            g_v = curr_adv_v + next_adv_v
                         self.trans_buffer[cav_id]['goal'].append(g_v)
 
                         if self.train_model:  # 加噪声
@@ -821,7 +831,9 @@ class WorkerCavAgent:
                         self.trans_buffer[cav_id]['real_acc'].append(real_a)   # 获取的是上一时步的实际acc
 
                         int_reward = -np.sqrt(np.sum(curr_delta[lane_id] ** 2))     # 同一条车道上车辆的inner reward相同
-                        int_reward += -abs(curr_adv_v[0] - o_v[1])                     # note:这里是新增的哦！！！！！！！！！！！！！！！
+                        # int_reward += -abs(curr_adv_v[0] - o_v[1])                  # note:有待对比
+                        if not self.use_raw_goal:
+                            int_reward = -abs(curr_adv_v[0] - o_v[1])
                         ext_reward = env.get_cav_reward(cav_obs[-1], self.trans_buffer[cav_id]['real_acc'][-2],
                                                         self.trans_buffer[cav_id]['action'][-2]) if len(cav_obs) >= 1 + self.T else 0
                         reward = (1 - self.alpha) * ext_reward + self.alpha * int_reward

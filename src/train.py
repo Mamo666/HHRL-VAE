@@ -87,12 +87,11 @@ experience_cfg = {
     # 'tpgv_g4_mean_only': setting('tpgv', {
     #     'light': {'goal_only_indicates_state_mean': True},
     #     'cav': {'goal_only_indicates_state_mean': True}}),
-    # 0817:
-    # 'tpgv_g4_find30w': setting('tpgv', {
+    # 'tpgv_g4_find30w': setting('tpgv', {                          # 0817
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8, 'memory_capacity': 40000, 'learn_start_ratio': 0.2}}),
 
-    # single
+    # here, single
     # 'tpgv_g4': setting('tpgv', {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
@@ -102,7 +101,7 @@ experience_cfg = {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
 
-    # single
+    # here, single
     # 'tpgv_g4_noCavVReward': setting('tpgv', {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
@@ -118,7 +117,17 @@ experience_cfg = {
 
     # 'P_store_oriAct': setting('P', {}),
 
+    # here, single
+
     # # Note: GPU服务器
+    # 'tpgv_g4_find30w_cavStateDim16': setting('tpgv', {
+    #     'light': {'vehicle': {'act_dim': 8}},
+    #     'cav': {'cav': {'state_dim': 16}, 'high_goal_dim': 8}}),
+    # 'Gv_g4_find30w_cavStateDim16': setting('Gv', {
+    #     'light': {'vehicle': {'act_dim': 8}},
+    #     'cav': {'cav': {'state_dim': 16}, 'high_goal_dim': 8}}),
+
+    # here, single
 
 }
 

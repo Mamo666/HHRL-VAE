@@ -80,23 +80,24 @@ def setting(base_key, change):
 
 
 experience_cfg = {
-    # # Note：Done
-
-    # # Note：Doing
-    # # # 公司
+    # # Note:公司
     # 'tpgv_g4': setting('tpgv', {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
     # 'tpgv_g4_mean_only': setting('tpgv', {
     #     'light': {'goal_only_indicates_state_mean': True},
     #     'cav': {'goal_only_indicates_state_mean': True}}),
+    # 0817:
+    # 'tpgv_g4_find30w': setting('tpgv', {
+    #     'light': {'vehicle': {'act_dim': 8}},
+    #     'cav': {'high_goal_dim': 8, 'memory_capacity': 40000, 'learn_start_ratio': 0.2}}),
 
     # single
     # 'tpgv_g4': setting('tpgv', {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
 
-    # # # 宿舍
+    # # Note: 宿舍
     # 'tpgv_loyal_g4': setting('tpgv', {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
@@ -106,7 +107,7 @@ experience_cfg = {
     #     'light': {'vehicle': {'act_dim': 8}},
     #     'cav': {'high_goal_dim': 8}}),
 
-    # # # 服务器
+    # # Note: cpu服务器
     # 'no_ctrl': setting('baseline', {}),
     # 'T': setting('T', {}),
     # 'P': setting('P', {}),
@@ -117,19 +118,18 @@ experience_cfg = {
 
     # 'P_store_oriAct': setting('P', {}),
 
-    # # Note: To do
+    # # Note: GPU服务器
+
 }
 
-SINGLE_FLAG = True
-series_name = '0815_VAE'
+series_name = '0817_find_30w'     # 注意，下面用文件夹名是否包含single判断是用单路口还是多路口
+# series_name = '0817_single'     # 注意，下面用文件夹名是否包含single判断是用单路口还是多路口
+flow_feat_id_list = [4, 0]      # None表示使用所有flow_feat
+
+
 MAX_EPISODES = 50  # 训练轮数
 SUMO_GUI = False
-# flow_feat_id_list = [0, 1, 2, 3, 4, 5]
-# flow_feat_id_list = None  # 表示使用所有flow_feat
-# flow_feat_id_list = [0, 4]
-flow_feat_id_list = [4, 0]
-
-series_name += '_single' if SINGLE_FLAG else ''
+SINGLE_FLAG = 'single' in series_name
 
 
 def launch_experiment(exp_cfg, save_model=True, single_flag=True, flow_feat_id=None):

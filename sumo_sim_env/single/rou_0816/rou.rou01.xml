@@ -1,0 +1,726 @@
+<routes>
+ <vType id="CAV" accel="3" decel="8" length="4" maxSpeed="15" reroute="false" color="1,0,0" carFollowModel="CACC" probability="0.2" />
+ <vType id="HDV" accel="3" decel="8" length="4" maxSpeed="15" reroute="false" probability="0.8" />
+ <vTypeDistribution id="typedist1" vTypes="CAV HDV" />
+
+  <vehicle id="car_1" depart="14" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_2" depart="48" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_3" depart="65" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_4" depart="68" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_5" depart="89" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_6" depart="96" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_7" depart="102" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_8" depart="116" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_9" depart="137" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_10" depart="138" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_11" depart="140" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_12" depart="151" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_13" depart="180" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_14" depart="184" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_15" depart="189" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_16" depart="210" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_17" depart="211" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_18" depart="240" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_19" depart="252" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_20" depart="263" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_21" depart="265" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_22" depart="271" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_23" depart="314" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_24" depart="315" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_25" depart="316" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_26" depart="363" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_27" depart="374" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_28" depart="396" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_29" depart="418" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_30" depart="467" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_31" depart="526" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_32" depart="532" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_33" depart="541" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_34" depart="553" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_35" depart="557" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_36" depart="580" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_37" depart="603" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_38" depart="636" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_39" depart="682" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_40" depart="719" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_41" depart="720" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_42" depart="762" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_43" depart="776" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_44" depart="781" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_45" depart="803" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_46" depart="803" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_47" depart="804" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_48" depart="827" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_49" depart="853" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_50" depart="874" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_51" depart="915" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_52" depart="937" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_53" depart="953" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_54" depart="965" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_55" depart="965" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_56" depart="976" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_57" depart="976" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_58" depart="987" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_59" depart="987" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_60" depart="987" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_61" depart="1016" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_62" depart="1017" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_63" depart="1059" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_64" depart="1060" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_65" depart="1066" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_66" depart="1078" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_67" depart="1081" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_68" depart="1111" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_69" depart="1132" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_70" depart="1137" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_71" depart="1141" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_72" depart="1148" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_73" depart="1168" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_74" depart="1181" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_75" depart="1261" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_76" depart="1286" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_77" depart="1295" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_78" depart="1303" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_79" depart="1309" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_80" depart="1313" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_81" depart="1324" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_82" depart="1334" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_83" depart="1343" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_84" depart="1345" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_85" depart="1386" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_86" depart="1389" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_87" depart="1399" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_88" depart="1404" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_89" depart="1411" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_90" depart="1444" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_91" depart="1502" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_92" depart="1516" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_93" depart="1537" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_94" depart="1566" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_95" depart="1568" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_96" depart="1613" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_97" depart="1619" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_98" depart="1633" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_99" depart="1635" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_100" depart="1669" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_101" depart="1676" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_102" depart="1707" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_103" depart="1712" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_104" depart="1719" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_105" depart="1776" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_106" depart="1780" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_107" depart="1830" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_108" depart="1833" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_109" depart="1833" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_110" depart="1842" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_111" depart="1872" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_112" depart="1887" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_113" depart="1892" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_114" depart="1934" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_115" depart="1936" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_116" depart="1939" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_117" depart="1955" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_118" depart="1961" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_119" depart="1964" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_120" depart="1972" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_121" depart="2018" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_122" depart="2046" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_123" depart="2051" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_124" depart="2055" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_125" depart="2069" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_126" depart="2078" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_127" depart="2090" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_128" depart="2098" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_129" depart="2102" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_130" depart="2121" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_131" depart="2131" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_132" depart="2173" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_133" depart="2177" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_134" depart="2194" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_135" depart="2215" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_136" depart="2265" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_137" depart="2296" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_138" depart="2311" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_139" depart="2346" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_140" depart="2376" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_141" depart="2390" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_142" depart="2390" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_143" depart="2391" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_144" depart="2397" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_145" depart="2436" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_146" depart="2451" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_147" depart="2454" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_148" depart="2463" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_149" depart="2489" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_150" depart="2497" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_151" depart="2522" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_152" depart="2524" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_153" depart="2534" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_154" depart="2535" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_155" depart="2536" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_156" depart="2549" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_157" depart="2593" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_158" depart="2616" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_159" depart="2626" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_160" depart="2636" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_161" depart="2663" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_162" depart="2675" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_163" depart="2683" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_164" depart="2753" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_165" depart="2784" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_166" depart="2793" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_167" depart="2799" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_168" depart="2805" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_169" depart="2821" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_170" depart="2828" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_171" depart="2834" departLane="0" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_3"/>
+  </vehicle>
+
+  <vehicle id="car_172" depart="2847" departLane="2" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_173" depart="2871" departLane="2" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_174" depart="2876" departLane="1" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_175" depart="2891" departLane="1" arrivalLane="0" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_2"/>
+  </vehicle>
+
+  <vehicle id="car_176" depart="2893" departLane="1" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_177" depart="2909" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_0 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_178" depart="2964" departLane="0" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_2 -edge_1"/>
+  </vehicle>
+
+  <vehicle id="car_179" depart="2971" departLane="0" arrivalLane="2" departSpeed="max" type="typedist1">
+    <route edges="edge_1 -edge_0"/>
+  </vehicle>
+
+  <vehicle id="car_180" depart="2980" departLane="2" arrivalLane="1" departSpeed="max" type="typedist1">
+    <route edges="edge_3 -edge_0"/>
+  </vehicle>
+
+</routes>

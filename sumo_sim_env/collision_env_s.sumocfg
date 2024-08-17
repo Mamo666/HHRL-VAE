@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="single/no_lane_change.net.xml"/>
+        <route-files value="single/rou_0816/rou.rou05.xml"/>
+    </input>
+
+    <time>
+        <begin value="0"/>
+        <end value="1296000"/>
+        <step-length value="1"/>
+    </time>
+
+    <report>
+        <no-warnings value="True"/>
+    </report>
+
+    <processing>
+        <lanechange.overtake-right value="true"/>
+        <collision.mingap-factor value="0"/>
+        <collision.stoptime value="10"/>
+        <collision.action value="warn"/>
+    </processing>
+
+    <gui_only>
+        <gui-settings-file value="setting.settings.xml"/>
+             	<start value="t"/>
+		        <quit-on-end value="t"/>
+    </gui_only>
+
+	
+</configuration>
